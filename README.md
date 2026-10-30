@@ -4,6 +4,8 @@ Omarchy bar plugin for the built-in trackpad. Click the trackpad icon in the bar
 and change scrolling, pointer speed, tapping, clicking and the three-finger
 workspace swipe. Every switch applies live; sliders apply when you let go.
 
+![Trackpad menu in the Omarchy bar](preview.png)
+
 ## Settings
 
 | Section | Setting | Hyprland option |
