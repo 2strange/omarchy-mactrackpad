@@ -1,7 +1,7 @@
 # Trackpad
 
 Omarchy bar plugin for the built-in trackpad. Click the trackpad icon in the bar
-and change scrolling, pointer speed, tapping, clicking and the three-finger
+(tabs: Pointer, Scroll, Click, Swipe) and change scrolling, pointer speed, tapping, clicking and the three-finger
 workspace swipe. Every switch applies live; sliders apply when you let go.
 
 ![Trackpad menu in the Omarchy bar](preview.png)
@@ -18,15 +18,19 @@ workspace swipe. Every switch applies live; sliders apply when you let go.
 | | Two-finger click is a right click | `input:touchpad:clickfinger_behavior` |
 | | Ignore trackpad while typing | `input:touchpad:disable_while_typing` |
 | Workspace swipe | Include empty workspaces | `gestures:workspace_swipe_use_r` |
-| | Swipe past the last one creates a new one | `gestures:workspace_swipe_create_new` |
+| | At the last workspace: stop, new one, wrap around | `workspace_swipe_create_new` / own gestures |
+| | Fingers: off, 3, 4 | `hl.gesture` in `trackpad.lua` |
 | | Invert swipe direction | `gestures:workspace_swipe_invert` |
 
-The workspace-swipe settings only matter once a swipe gesture is enabled. Omarchy
-ships it commented out in `~/.config/hypr/input.lua`; uncomment it there:
+The plugin adds the workspace swipe itself (3 fingers by default; 4 fingers or
+Off on the Swipe tab). If your `~/.config/hypr/input.lua` defines its own
+`hl.gesture(... action = "workspace")`, remove that line or set Fingers to Off;
+the menu warns when both are active.
 
-```lua
-hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
-```
+**At the last workspace** you can stop, open a new workspace, or wrap around to
+the first one. Stop and New one use Hyprland's own swipe, which follows your
+fingers. Hyprland's swipe cannot wrap, so Wrap around uses two gestures that
+switch to the next or previous open workspace when the swipe ends.
 
 ## Install
 

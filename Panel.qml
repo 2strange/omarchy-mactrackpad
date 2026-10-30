@@ -14,6 +14,7 @@ Panel {
   manageIpc: false
 
   property var anchorItem: null
+  property string tab: "pointer"  // Pointer / Scroll / Click / Swipe
   property var hostWidget: null
   readonly property var barIdentity: hostWidget || root
 
@@ -234,65 +235,135 @@ Panel {
 
         PanelSeparator { width: parent.width; foreground: root.fg }
 
-        // ---------- Pointer ----------
-        PanelSectionHeader { text: "POINTER"; foreground: root.fg; fontFamily: root.fontFam }
-        SliderRow {
-          label: "Tracking speed"
-          minimum: -1; maximum: 1; step: 0.05
-          value: root.val("sensitivity", 0)
-          onCommitted: function(v) { root.set("sensitivity", v) }
+        ButtonGroup {
+          width: parent.width
+          options: [
+            { value: "pointer", label: "Pointer" },
+            { value: "scroll", label: "Scroll" },
+            { value: "click", label: "Click" },
+            { value: "swipe", label: "Swipe" }
+          ]
+          value: root.tab
+          foreground: root.fg
+          fontFamily: root.fontFam
+          fontSize: Style.font.caption
+          focusable: false
+          onChanged: function(v) { root.tab = v }
         }
 
-        // ---------- Scrolling ----------
-        PanelSectionHeader { text: "SCROLLING"; foreground: root.fg; fontFamily: root.fontFam }
-        KeySwitch {
-          key: "natural_scroll"
-          label: "Natural scrolling"
-          description: "Content follows the fingers"
-        }
-        SliderRow {
-          label: "Scroll speed"
-          minimum: 0.1; maximum: 2; step: 0.05
-          suffix: "×"
-          value: root.val("scroll_factor", 0.4)
-          onCommitted: function(v) { root.set("scroll_factor", v) }
-        }
-
-        // ---------- Clicking ----------
-        PanelSectionHeader { text: "CLICKING"; foreground: root.fg; fontFamily: root.fontFam }
-        KeySwitch {
-          key: "tap_to_click"; fallback: true
-          label: "Tap to click"
-        }
-        KeySwitch {
-          key: "tap_and_drag"; fallback: true
-          label: "Tap and drag"
-          description: "Double-tap and hold to drag"
-        }
-        KeySwitch {
-          key: "clickfinger_behavior"; fallback: true
-          label: "Two-finger click is a right click"
-          description: "Off: right-click in the lower-right corner"
-        }
-        KeySwitch {
-          key: "disable_while_typing"; fallback: true
-          label: "Ignore trackpad while typing"
+        Column {
+          width: parent.width
+          spacing: Style.space(14)
+          visible: root.tab === "pointer"
+          // ---------- Pointer ----------
+          PanelSectionHeader { text: "POINTER"; foreground: root.fg; fontFamily: root.fontFam }
+          SliderRow {
+            label: "Tracking speed"
+            minimum: -1; maximum: 1; step: 0.05
+            value: root.val("sensitivity", 0)
+            onCommitted: function(v) { root.set("sensitivity", v) }
+          }
         }
 
-        // ---------- Gestures ----------
-        PanelSectionHeader { text: "WORKSPACE SWIPE (3 FINGERS)"; foreground: root.fg; fontFamily: root.fontFam }
-        KeySwitch {
-          key: "swipe_use_r"
-          label: "Include empty workspaces"
-          description: "Off: swiping skips empty workspaces"
+        Column {
+          width: parent.width
+          spacing: Style.space(14)
+          visible: root.tab === "scroll"
+          // ---------- Scrolling ----------
+          PanelSectionHeader { text: "SCROLLING"; foreground: root.fg; fontFamily: root.fontFam }
+          KeySwitch {
+            key: "natural_scroll"
+            label: "Natural scrolling"
+            description: "Content follows the fingers"
+          }
+          SliderRow {
+            label: "Scroll speed"
+            minimum: 0.1; maximum: 2; step: 0.05
+            suffix: "×"
+            value: root.val("scroll_factor", 0.4)
+            onCommitted: function(v) { root.set("scroll_factor", v) }
+          }
         }
-        KeySwitch {
-          key: "swipe_create_new"; fallback: true
-          label: "Swipe past the last one creates a new one"
+
+        Column {
+          width: parent.width
+          spacing: Style.space(14)
+          visible: root.tab === "click"
+          // ---------- Clicking ----------
+          PanelSectionHeader { text: "CLICKING"; foreground: root.fg; fontFamily: root.fontFam }
+          KeySwitch {
+            key: "tap_to_click"; fallback: true
+            label: "Tap to click"
+          }
+          KeySwitch {
+            key: "tap_and_drag"; fallback: true
+            label: "Tap and drag"
+            description: "Double-tap and hold to drag"
+          }
+          KeySwitch {
+            key: "clickfinger_behavior"; fallback: true
+            label: "Two-finger click is a right click"
+            description: "Off: right-click in the lower-right corner"
+          }
+          KeySwitch {
+            key: "disable_while_typing"; fallback: true
+            label: "Ignore trackpad while typing"
+          }
         }
-        KeySwitch {
-          key: "swipe_invert"; fallback: true
-          label: "Invert swipe direction"
+
+        Column {
+          width: parent.width
+          spacing: Style.space(14)
+          visible: root.tab === "swipe"
+          // ---------- Gestures ----------
+          PanelSectionHeader { text: "WORKSPACE SWIPE"; foreground: root.fg; fontFamily: root.fontFam }
+          Column {
+            width: parent.width
+            spacing: Style.space(6)
+            Text { text: "Fingers"; color: root.fg; font.family: root.fontFam; font.pixelSize: Style.font.body }
+            ButtonGroup {
+              width: parent.width
+              options: [{ value: "0", label: "Off" }, { value: "3", label: "3 fingers" }, { value: "4", label: "4 fingers" }]
+              value: String(root.val("swipe_fingers", 3))
+              foreground: root.fg; fontFamily: root.fontFam; fontSize: Style.font.caption; focusable: false
+              onChanged: function(v) { root.set("swipe_fingers", parseInt(v)) }
+            }
+          }
+          Text {
+            width: parent.width
+            visible: root.val("gesture_conflict", false) === true
+            text: "~/.config/hypr/input.lua defines its own swipe gesture as well. Remove that line, or set Fingers to Off here."
+            color: Color.urgent
+            font.family: root.fontFam; font.pixelSize: Style.font.caption; wrapMode: Text.WordWrap
+          }
+          Column {
+            width: parent.width
+            spacing: Style.space(6)
+            Text { text: "At the last workspace"; color: root.fg; font.family: root.fontFam; font.pixelSize: Style.font.body }
+            ButtonGroup {
+              width: parent.width
+              options: [{ value: "stop", label: "Stop" }, { value: "new", label: "New one" }, { value: "wrap", label: "Wrap around" }]
+              value: String(root.val("swipe_end", "new"))
+              foreground: root.fg; fontFamily: root.fontFam; fontSize: Style.font.caption; focusable: false
+              onChanged: function(v) { root.set("swipe_end", v) }
+            }
+            Text {
+              width: parent.width
+              text: root.val("swipe_end", "new") === "wrap"
+                ? "Wrap around switches when the swipe ends (Hyprland's live swipe cannot wrap)"
+                : "The workspace follows your fingers"
+              color: root.dim; font.family: root.fontFam; font.pixelSize: Style.font.caption; wrapMode: Text.WordWrap
+            }
+          }
+          KeySwitch {
+            key: "swipe_use_r"
+            label: "Include empty workspaces"
+            description: "Off: swiping skips empty workspaces (Stop and New one)"
+          }
+          KeySwitch {
+            key: "swipe_invert"; fallback: true
+            label: "Invert swipe direction"
+          }
         }
 
         Text {
