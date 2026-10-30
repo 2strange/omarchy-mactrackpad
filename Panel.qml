@@ -100,7 +100,8 @@ Panel {
     id: writeProc
     stderr: StdioCollector { id: writeErr }
     onExited: function(code) {
-      root.errorText = code === 0 ? "" : code === 1 ? "Hyprland rejected the change, rolled back" : "Could not apply the change"
+      root.errorText = code === 0 ? "" : code === 1 ? "Hyprland rejected the change, rolled back"
+        : code === 3 ? "Another swipe gesture in input.lua blocks this, see the Swipe tab" : "Could not apply the change"
       if (code !== 0) console.warn("trackpad-config failed", code, writeErr.text)
       root.refresh()
     }

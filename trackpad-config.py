@@ -11,7 +11,7 @@ checks `hyprctl configerrors`; on an error the previous file is put back and the
 On the first write a marked block is appended to ~/.config/hypr/input.lua that loads trackpad.lua,
 unless input.lua already loads it.
 """
-import json, os, subprocess, sys, tempfile
+import json, os, re, subprocess, sys, tempfile
 
 TARGET = os.path.expanduser("~/.config/hypr/trackpad.lua")
 INPUT = os.path.expanduser("~/.config/hypr/input.lua")
@@ -96,6 +96,14 @@ def effective():
     state = saved()
     if "swipe_end" not in state and "swipe_create_new" in state:  # settings from version 1.0
         state["swipe_end"] = "new" if state["swipe_create_new"] else "stop"
+    if state.get("swipe_end") not in SWIPE_ENDS:
+        state.pop("swipe_end", None)
+    if state.get("swipe_fingers") not in (0, 3, 4):
+        state.pop("swipe_fingers", None)
+    if "swipe_fingers" not in state and gesture_conflict(SPEC["swipe_fingers"][2]):
+        # input.lua already has a swipe on these fingers (version 1.0 told people to add one):
+        # a second one would make Hyprland reject every change, so start with ours off
+        state["swipe_fingers"] = 0
     out = {}
     for key, (typ, option, fallback) in SPEC.items():
         value = state.get(key)
@@ -143,12 +151,22 @@ hl.gesture({{ fingers = {fingers}, direction = "{prv}", action = function() hl.d
 '''
 
 
-def gesture_conflict():
-    """input.lua defines its own workspace swipe (an active hl.gesture line outside our block)."""
+GESTURE_RE = re.compile(r"hl\.gesture\s*\(\s*\{(.*?)\}\s*\)", re.S)
+HORIZONTAL = ("horizontal", "left", "right", "swipe")
+
+
+def gesture_conflict(fingers):
+    """input.lua (outside our block) has a gesture Hyprland would refuse next to ours:
+    same finger count, a horizontal direction and no modifier, whatever its action."""
+    if int(fingers) <= 0:
+        return False
     text = without_loader(read(INPUT) or "")
-    for line in text.splitlines():
-        code = line.split("--", 1)[0]
-        if "hl.gesture" in code and "workspace" in code:
+    text = re.sub(r"--\[(=*)\[.*?\]\1\]", "", text, flags=re.S)  # block comments
+    text = re.sub(r"--[^\n]*", "", text)  # line comments
+    for spec in GESTURE_RE.findall(text):
+        f = re.search(r"fingers\s*=\s*(\d+)", spec)
+        d = re.search(r"direction\s*=\s*[\"']([^\"']+)", spec)
+        if f and d and int(f.group(1)) == int(fingers) and d.group(1) in HORIZONTAL and "mods" not in spec:
             return True
     return False
 
@@ -266,7 +284,7 @@ def apply(changes):
         except Exception:
             pass
         print(errors, file=sys.stderr)
-        return 1
+        return 3 if "overshadowed by a previous gesture" in errors else 1
     return 0
 
 
@@ -290,7 +308,7 @@ def reset():
 def main(argv):
     if len(argv) >= 1 and argv[0] == "get":
         out = effective()
-        out["gesture_conflict"] = gesture_conflict() and int(out["swipe_fingers"]) > 0
+        out["gesture_conflict"] = gesture_conflict(out["swipe_fingers"])
         print(json.dumps(out))
         return 0
     if len(argv) == 1 and argv[0] == "reset":
