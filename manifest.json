@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.2strange.trackpad",
+  "name": "Trackpad",
+  "version": "1.0.0",
+  "author": "2strange",
+  "license": "MIT",
+  "description": "Trackpad settings in the bar: scroll direction and speed, pointer speed, tapping, clicking and workspace swipe, applied live",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Trackpad",
+    "description": "Click for trackpad settings; every control applies live through hypr/trackpad.lua",
+    "category": "Input",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
