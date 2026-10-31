@@ -237,7 +237,7 @@ hl.config({{
     }},
   }},
   gestures = {{
-    workspace_swipe_use_r = {lua(s["swipe_use_r"])},
+    workspace_swipe_use_r = false,  -- empty workspaces come from persistent 1-5; "r" breaks the swipe on workspace 1
     workspace_swipe_invert = {lua(s["swipe_invert"])},
     workspace_swipe_create_new = {lua(s["swipe_end"] == "new")},
   }},

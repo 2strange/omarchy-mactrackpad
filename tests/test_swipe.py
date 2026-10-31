@@ -51,6 +51,10 @@ class SwipeTest(unittest.TestCase):
     def test_other_monitor_is_skipped(self):
         self.assertEqual(swipe(1, [1], "right", other=[2]), "3")
 
+    def test_hyprland_r_mode_stays_off(self):
+        # with workspace_swipe_use_r, Hyprland's swipe does nothing on workspace 1 (both directions)
+        self.assertIn("workspace_swipe_use_r = false", tc.render(dict(tc.effective(), swipe_use_r=True), None))
+
     def test_live_swipe_for_stop_and_new(self):
         for end in ("stop", "new"):
             lua = tc.gesture_lua({"swipe_fingers": 3, "swipe_end": end, "swipe_use_r": True, "swipe_invert": False})
