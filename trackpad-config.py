@@ -134,8 +134,9 @@ def lua(v):
 def gesture_lua(s):
     """The workspace swipe. Stop and new use Hyprland's own live swipe, which follows the
     fingers. It cannot wrap around, so "wrap" is two gestures that pick the target in Lua when
-    the swipe ends: with Include empty, workspaces 1-5 (always shown in the bar) and every one
-    up to the highest open one count; otherwise only open workspaces."""
+    the swipe ends. Include empty means the same in every mode: workspaces 1-5 (always shown
+    in the bar, kept alive as persistent workspaces) plus the open ones; off, only open ones.
+    use_r stays off: with it, Hyprland's live swipe does nothing on workspace 1."""
     fingers = int(s["swipe_fingers"])
     if fingers <= 0:
         return ""
@@ -155,7 +156,6 @@ hl.gesture({{ fingers = {fingers}, direction = "horizontal", action = "workspace
     return keep + f'''
 -- Workspace swipe with {fingers} fingers, wrapping around (switches when the swipe ends;
 -- Hyprland's live swipe cannot wrap).
-local SWIPE_END = "{s["swipe_end"]}"   -- at the last workspace: stop, new, wrap
 local SWIPE_EMPTY = {lua(s["swipe_use_r"])}  -- include empty workspaces
 local function trackpad_swipe(forward)
   local mon = hl.get_active_monitor()
@@ -176,23 +176,16 @@ local function trackpad_swipe(forward)
     end
   end
   local ids = {{}}
-  for i = 1, (SWIPE_EMPTY and math.max(5, top) or top) do
-    if (SWIPE_EMPTY and not elsewhere[i]) or here[i] then ids[#ids + 1] = i end
+  for i = 1, math.max(5, top) do
+    if (SWIPE_EMPTY and i <= 5 and not elsewhere[i]) or here[i] then ids[#ids + 1] = i end
   end
   local pos = 1
   for i, id in ipairs(ids) do if id == cur then pos = i end end
   local target
   if forward then
-    target = ids[pos + 1]
-    if not target and SWIPE_END == "wrap" then target = ids[1] end
-    if not target and SWIPE_END == "new" then
-      target = ids[#ids] + 1
-      while elsewhere[target] do target = target + 1 end
-      if target > 10 then target = nil end
-    end
+    target = ids[pos + 1] or ids[1]
   else
-    target = ids[pos - 1]
-    if not target and SWIPE_END == "wrap" then target = ids[#ids] end
+    target = ids[pos - 1] or ids[#ids]
   end
   if target and target ~= cur then hl.dispatch(hl.dsp.focus({{ workspace = tostring(target) }})) end
 end

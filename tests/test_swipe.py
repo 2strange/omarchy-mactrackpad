@@ -46,7 +46,7 @@ class SwipeTest(unittest.TestCase):
         self.assertEqual(swipe(1, [1, 2], "left"), "5")
         self.assertEqual(swipe(1, [1, 3], "left", empty=False), "3")
         self.assertEqual(swipe(7, [1, 7], "right"), "1")
-        self.assertEqual(swipe(5, [1, 7], "right"), "6")
+        self.assertEqual(swipe(5, [1, 7], "right"), "7")  # same set as Stop / New one: 1-5 + open ones
 
     def test_other_monitor_is_skipped(self):
         self.assertEqual(swipe(1, [1], "right", other=[2]), "3")

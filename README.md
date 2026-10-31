@@ -17,7 +17,7 @@ workspace swipe. Every switch applies live; sliders apply when you let go.
 | | Tap and drag | `input:touchpad:tap-and-drag` |
 | | Two-finger click is a right click | `input:touchpad:clickfinger_behavior` |
 | | Ignore trackpad while typing | `input:touchpad:disable_while_typing` |
-| Workspace swipe | Include empty workspaces | `gestures:workspace_swipe_use_r` |
+| Workspace swipe | Include empty workspaces | persistent workspaces 1-5 (`hl.workspace_rule`) |
 | | At the last workspace: stop, new one, wrap around | `gestures:workspace_swipe_create_new` / own gestures |
 | | Fingers: off, 3, 4 | `hl.gesture` in `trackpad.lua` |
 | | Invert swipe direction | `gestures:workspace_swipe_invert` |
@@ -34,10 +34,18 @@ swipe keeps working; remove the line and pick 3 or 4 fingers to get the new
 end-of-row options.
 
 **At the last workspace** you can stop, open a new workspace, or wrap around to
-the first one. Stop and New one use Hyprland's own swipe, which follows your
-fingers. Hyprland's swipe cannot wrap, so Wrap around uses two gestures that
-switch to the next or previous open workspace when the swipe ends. Wrap around
-always skips empty workspaces, so Include empty workspaces has no effect there.
+the first one. Stop and New one use Hyprland's own swipe: the workspace follows
+your fingers and goes back if you change your mind. Hyprland's swipe cannot
+wrap, so Wrap around uses two gestures that switch to the next or previous
+workspace when the swipe ends.
+
+**Include empty workspaces** works like Spaces on a Mac: workspaces 1-5 always
+exist (the bar shows them anyway), so you can swipe to an empty one and start
+something there. The plugin keeps them as persistent workspaces; without the
+switch, the swipe only visits open workspaces. On several monitors the empty
+1-5 are placed by Hyprland, usually on the first monitor. The plugin always
+sets `gestures:workspace_swipe_use_r = false`, also over your own setting: with
+it on, Hyprland's swipe does nothing at all on workspace 1.
 
 ## Install
 

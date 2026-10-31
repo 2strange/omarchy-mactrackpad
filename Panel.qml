@@ -359,7 +359,7 @@ Panel {
           KeySwitch {
             key: "swipe_use_r"
             label: "Include empty workspaces"
-            description: "Keeps workspaces 1-5 around, like in the bar, so you can swipe to them. Off: only open ones"
+            description: "Workspaces 1-5 always exist, like in the bar, so you can swipe to an empty one. Off: only open ones"
           }
           KeySwitch {
             key: "swipe_invert"; fallback: true
