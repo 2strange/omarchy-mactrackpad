@@ -132,18 +132,29 @@ def lua(v):
 
 
 def gesture_lua(s):
-    """The workspace swipe: two gestures that switch to the next or previous workspace on
-    this monitor when the swipe ends. Hyprland's own live swipe cannot wrap around and does
-    not reliably reach empty workspaces, so the plugin picks the target itself.
-    Include empty: workspaces 1-5 (always shown in the bar) and every one up to the highest
-    open one count, open or not; otherwise only open workspaces. Workspaces stay within 1-10."""
+    """The workspace swipe. Stop and new use Hyprland's own live swipe, which follows the
+    fingers. It cannot wrap around, so "wrap" is two gestures that pick the target in Lua when
+    the swipe ends: with Include empty, workspaces 1-5 (always shown in the bar) and every one
+    up to the highest open one count; otherwise only open workspaces."""
     fingers = int(s["swipe_fingers"])
     if fingers <= 0:
         return ""
+    # Hyprland's live swipe only moves between workspaces that exist, so with Include empty
+    # workspaces 1-5 are kept alive (like the bar shows them, like Spaces on a Mac)
+    keep = ""
+    if s["swipe_use_r"]:
+        keep = "\n-- Include empty workspaces: 1-5 always exist, so the swipe can reach them.\n" + "".join(
+            f'hl.workspace_rule({{ workspace = "{i}", persistent = true }})\n' for i in range(1, 6))
+    if s["swipe_end"] != "wrap":
+        return keep + f'''
+-- Workspace swipe with {fingers} fingers (Hyprland's own, follows the fingers).
+hl.gesture({{ fingers = {fingers}, direction = "horizontal", action = "workspace" }})
+'''
     # natural (invert on): fingers moving left bring in the next workspace
     nxt, prv = ("left", "right") if s["swipe_invert"] else ("right", "left")
-    return f'''
--- Workspace swipe with {fingers} fingers (switches when the swipe ends).
+    return keep + f'''
+-- Workspace swipe with {fingers} fingers, wrapping around (switches when the swipe ends;
+-- Hyprland's live swipe cannot wrap).
 local SWIPE_END = "{s["swipe_end"]}"   -- at the last workspace: stop, new, wrap
 local SWIPE_EMPTY = {lua(s["swipe_use_r"])}  -- include empty workspaces
 local function trackpad_swipe(forward)
