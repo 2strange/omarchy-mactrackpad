@@ -348,18 +348,11 @@ Panel {
               foreground: root.fg; fontFamily: root.fontFam; fontSize: Style.font.caption; focusable: false
               onChanged: function(v) { root.set("swipe_end", v) }
             }
-            Text {
-              width: parent.width
-              text: root.val("swipe_end", "new") === "wrap"
-                ? "Wrap around switches when the swipe ends (Hyprland's live swipe cannot wrap)"
-                : "The workspace follows your fingers"
-              color: root.dim; font.family: root.fontFam; font.pixelSize: Style.font.caption; wrapMode: Text.WordWrap
-            }
           }
           KeySwitch {
             key: "swipe_use_r"
             label: "Include empty workspaces"
-            description: "Off: swiping skips empty workspaces (Stop and New one)"
+            description: "Workspaces 1-5 always count, like in the bar. Off: only open ones"
           }
           KeySwitch {
             key: "swipe_invert"; fallback: true

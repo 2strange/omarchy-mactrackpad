@@ -132,22 +132,61 @@ def lua(v):
 
 
 def gesture_lua(s):
-    """The workspace swipe. Stop and new use Hyprland's own 1:1 swipe; Hyprland cannot wrap
-    around, so "wrap" is two discrete gestures that jump to the next or previous open workspace."""
+    """The workspace swipe: two gestures that switch to the next or previous workspace on
+    this monitor when the swipe ends. Hyprland's own live swipe cannot wrap around and does
+    not reliably reach empty workspaces, so the plugin picks the target itself.
+    Include empty: workspaces 1-5 (always shown in the bar) and every one up to the highest
+    open one count, open or not; otherwise only open workspaces. Workspaces stay within 1-10."""
     fingers = int(s["swipe_fingers"])
     if fingers <= 0:
         return ""
-    if s["swipe_end"] != "wrap":
-        return f'''
--- Workspace swipe with {fingers} fingers (Hyprland's own, follows the fingers).
-hl.gesture({{ fingers = {fingers}, direction = "horizontal", action = "workspace" }})
-'''
     # natural (invert on): fingers moving left bring in the next workspace
     nxt, prv = ("left", "right") if s["swipe_invert"] else ("right", "left")
     return f'''
--- Workspace swipe with {fingers} fingers, wrapping around at the ends (fires when the swipe ends).
-hl.gesture({{ fingers = {fingers}, direction = "{nxt}", action = function() hl.dispatch(hl.dsp.focus({{ workspace = "e+1" }})) end }})
-hl.gesture({{ fingers = {fingers}, direction = "{prv}", action = function() hl.dispatch(hl.dsp.focus({{ workspace = "e-1" }})) end }})
+-- Workspace swipe with {fingers} fingers (switches when the swipe ends).
+local SWIPE_END = "{s["swipe_end"]}"   -- at the last workspace: stop, new, wrap
+local SWIPE_EMPTY = {lua(s["swipe_use_r"])}  -- include empty workspaces
+local function trackpad_swipe(forward)
+  local mon = hl.get_active_monitor()
+  local cur = mon and mon.active_workspace and mon.active_workspace.id or 0
+  if cur <= 0 then  -- named or special workspace: plain step
+    hl.dispatch(hl.dsp.focus({{ workspace = forward and "e+1" or "e-1" }}))
+    return
+  end
+  local here, elsewhere, top = {{ [cur] = true }}, {{}}, cur
+  for _, w in ipairs(hl.get_workspaces()) do
+    if w.id > 0 then
+      if w.monitor and w.monitor.name == mon.name then
+        here[w.id] = true
+        top = math.max(top, w.id)
+      else
+        elsewhere[w.id] = true
+      end
+    end
+  end
+  local ids = {{}}
+  for i = 1, (SWIPE_EMPTY and math.max(5, top) or top) do
+    if (SWIPE_EMPTY and not elsewhere[i]) or here[i] then ids[#ids + 1] = i end
+  end
+  local pos = 1
+  for i, id in ipairs(ids) do if id == cur then pos = i end end
+  local target
+  if forward then
+    target = ids[pos + 1]
+    if not target and SWIPE_END == "wrap" then target = ids[1] end
+    if not target and SWIPE_END == "new" then
+      target = ids[#ids] + 1
+      while elsewhere[target] do target = target + 1 end
+      if target > 10 then target = nil end
+    end
+  else
+    target = ids[pos - 1]
+    if not target and SWIPE_END == "wrap" then target = ids[#ids] end
+  end
+  if target and target ~= cur then hl.dispatch(hl.dsp.focus({{ workspace = tostring(target) }})) end
+end
+hl.gesture({{ fingers = {fingers}, direction = "{nxt}", action = function() trackpad_swipe(true) end }})
+hl.gesture({{ fingers = {fingers}, direction = "{prv}", action = function() trackpad_swipe(false) end }})
 '''
 
 
