@@ -6,7 +6,7 @@ import qs.Ui
 // Trackpad icon in the bar; click opens the settings popup (Panel.qml).
 BarWidget {
   id: root
-  moduleName: "io.github.2strange.trackpad"
+  moduleName: "io.github.2strange.mactrackpad"
 
   function injectPanel() {
     var target = panelLoader.item
@@ -35,7 +35,7 @@ BarWidget {
   }
 
   IpcHandler {
-    target: "io.github.2strange.trackpad"
+    target: "io.github.2strange.mactrackpad"
     function open(): void { root.open() }
     function close(): void { root.close() }
     function toggle(): void { root.togglePanel() }
@@ -49,7 +49,7 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     text: String.fromCodePoint(0xF07F8)
-    tooltipText: "Trackpad settings"
+    tooltipText: "Mac Trackpad settings"
     onPressed: function(b) { root.togglePanel() }
   }
 }

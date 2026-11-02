@@ -1,10 +1,34 @@
-# Trackpad
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo-dark.svg">
+    <img src="docs/images/logo-light.svg" alt="Mac Trackpad" width="440">
+  </picture>
+  <p><strong>The built-in trackpad, set up the way a Mac does it.</strong></p>
+  <p>
+    <img alt="Made for Omarchy" src="https://img.shields.io/badge/Omarchy-4-e0913a?style=flat-square">
+    <img alt="Wayland and Hyprland" src="https://img.shields.io/badge/Wayland-Hyprland-202431?style=flat-square">
+    <img alt="No daemon" src="https://img.shields.io/badge/daemon-none-202431?style=flat-square">
+    <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/License-MIT-e0913a?style=flat-square"></a>
+  </p>
+</div>
 
-Omarchy bar plugin for the built-in trackpad. Click the trackpad icon in the bar
-(tabs: Pointer, Scroll, Click, Swipe) and change scrolling, pointer speed, tapping, clicking and the three-finger
-workspace swipe. Every switch applies live; sliders apply when you let go.
+# Mac Trackpad for Omarchy
 
-![Trackpad menu in the Omarchy bar](preview.png)
+Omarchy bar plugin for the built-in trackpad. Most of it is the right Hyprland and libinput
+settings for a Mac feel, gathered in one menu: click the trackpad icon in the bar
+(tabs: Pointer, Scroll, Click, Swipe) and change scrolling, pointer speed, tapping and clicking.
+Every switch applies live; sliders apply when you let go. Nothing runs in the background.
+
+The one part that is more than a setting is the **workspace swipe**. The plugin writes its own
+three-finger gesture: the workspace follows your fingers, empty workspaces stay reachable like
+Spaces on a Mac, the swipe works from workspace 1, and at the last workspace it stops, opens a
+new one or wraps around.
+
+**Works with [MagicMouse](https://github.com/2strange/omarchy-magicmouse).** In its touchpad
+mode the Magic Mouse acts as a trackpad, and its two-finger swipe is this same gesture: end of
+row, empty workspaces and direction come from the Swipe tab here.
+
+![Mac Trackpad menu in the Omarchy bar](preview.png)
 
 ## Settings
 
@@ -50,7 +74,7 @@ it on, Hyprland's swipe does nothing at all on workspace 1.
 ## Install
 
 ```sh
-omarchy plugin add https://github.com/2strange/omarchy-trackpad.git --enable
+omarchy plugin add https://github.com/2strange/omarchy-mactrackpad.git --enable
 ```
 
 No password and no packages: the plugin only writes files in `~/.config/hypr/`.
@@ -76,16 +100,25 @@ No password and no packages: the plugin only writes files in `~/.config/hypr/`.
 From a terminal:
 
 ```sh
-cd ~/.config/omarchy/plugins/io.github.2strange.trackpad
+cd ~/.config/omarchy/plugins/io.github.2strange.mactrackpad
 python3 trackpad-config.py get
 python3 trackpad-config.py set natural_scroll=true scroll_factor=0.6
+```
+
+**Coming from the plugin's old name** (Trackpad, `io.github.2strange.trackpad`): remove the old
+plugin and add this one. Your settings in `trackpad.lua` stay, and `reset` also removes a
+loader block the old version wrote.
+
+```sh
+omarchy plugin remove io.github.2strange.trackpad
+omarchy plugin add https://github.com/2strange/omarchy-mactrackpad.git --enable
 ```
 
 ## Remove
 
 ```sh
-python3 ~/.config/omarchy/plugins/io.github.2strange.trackpad/trackpad-config.py reset
-omarchy plugin remove io.github.2strange.trackpad
+python3 ~/.config/omarchy/plugins/io.github.2strange.mactrackpad/trackpad-config.py reset
+omarchy plugin remove io.github.2strange.mactrackpad
 ```
 
 `reset` deletes `trackpad.lua` and the marked block in `input.lua`, so Hyprland

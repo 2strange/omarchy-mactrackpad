@@ -9,8 +9,8 @@ import qs.Ui
 // Switches write on click, sliders on release (each write is a Hyprland reload).
 Panel {
   id: root
-  moduleName: "io.github.2strange.trackpad"
-  ipcTarget: "io.github.2strange.trackpad"
+  moduleName: "io.github.2strange.mactrackpad"
+  ipcTarget: "io.github.2strange.mactrackpad"
   manageIpc: false
 
   property var anchorItem: null
@@ -229,7 +229,7 @@ Panel {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             spacing: Style.space(2)
-            Text { text: "Trackpad"; color: root.fg; font.family: root.fontFam; font.pixelSize: Style.font.title; font.bold: true; width: parent.width; elide: Text.ElideRight }
+            Text { text: "Mac Trackpad"; color: root.fg; font.family: root.fontFam; font.pixelSize: Style.font.title; font.bold: true; width: parent.width; elide: Text.ElideRight }
             Text { text: (root.errorText !== "" ? root.errorText : "Applies live").toUpperCase(); color: root.dim; font.family: root.fontFam; font.pixelSize: Style.font.caption; font.bold: true; font.letterSpacing: 1.2; width: parent.width; elide: Text.ElideRight }
           }
         }

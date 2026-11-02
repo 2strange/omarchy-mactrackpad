@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "io.github.2strange.trackpad",
-  "name": "Trackpad",
-  "version": "1.0.0",
+  "id": "io.github.2strange.mactrackpad",
+  "name": "Mac Trackpad",
+  "version": "1.1.0",
   "author": "2strange",
   "license": "MIT",
-  "description": "Trackpad settings in the bar: scroll direction and speed, pointer speed, tapping, clicking and workspace swipe, applied live",
+  "description": "Mac-like settings for the built-in trackpad, in the bar: natural scrolling, tracking and scroll speed, tap to click, two-finger right click, ignore while typing, applied live through Hyprland. No daemon: the menu writes one Hyprland file. Plus its own three-finger workspace swipe that follows your fingers, keeps empty workspaces, works from workspace 1 and at the last workspace stops, opens a new one or wraps around. The MagicMouse plugin uses this same swipe and its settings when the mouse acts as a trackpad.",
   "kinds": [
     "bar-widget"
   ],
@@ -13,7 +13,7 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Trackpad",
+    "displayName": "Mac Trackpad",
     "description": "Click for trackpad settings; every control applies live through hypr/trackpad.lua",
     "category": "Input",
     "allowMultiple": false,
