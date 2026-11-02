@@ -5,7 +5,7 @@
   "version": "1.1.0",
   "author": "2strange",
   "license": "MIT",
-  "description": "Mac-like settings for the built-in trackpad, in the bar: natural scrolling, tracking and scroll speed, tap to click, two-finger right click, ignore while typing, applied live through Hyprland. No daemon: the menu writes ~/.config/hypr/trackpad.lua and adds one marked loader block to input.lua. Plus its own three-finger workspace swipe: it works from workspace 1, can keep empty workspaces 1-5, and at the last workspace stops or opens a new one (the workspace follows your fingers) or wraps around. With three fingers set, the MagicMouse plugin's two-finger swipe is this same gesture.",
+  "description": "Mac-like settings for the built-in trackpad, in the bar: natural scrolling, tracking and scroll speed, tap to click, two-finger right click, ignore while typing, applied live. No daemon: it writes ~/.config/hypr/trackpad.lua and one marked loader block in input.lua. Its own three-finger workspace swipe works from workspace 1, can keep empty workspaces 1-5, and at the end stops, opens a new one or wraps around. MagicMouse's two-finger swipe uses this same gesture (Fingers: 3).",
   "kinds": [
     "bar-widget"
   ],
