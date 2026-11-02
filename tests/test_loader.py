@@ -17,6 +17,14 @@ class Loader(unittest.TestCase):
         old = tc.LOADER.replace(tc.PLUGIN_ID, "io.github.2strange.trackpad")
         self.assertEqual(tc.without_loader("a\n" + old + "b\n"), "a\nb\n")
 
+    def test_old_and_new_block(self):
+        old = tc.LOADER.replace(tc.PLUGIN_ID, "io.github.2strange.trackpad")
+        self.assertEqual(tc.without_loader("a\n" + tc.LOADER + "b\n" + old + "c\n"), "a\nb\nc\n")
+
+    def test_orphan_begin_before_a_block_keeps_the_text_between(self):
+        text = "a\n" + tc.MARK_BEGIN + "\nmine\n" + tc.LOADER + "b\n"
+        self.assertEqual(tc.without_loader(text), text)
+
     def test_missing_end_marker_is_left_alone(self):
         text = "a\n" + tc.MARK_BEGIN + "\nb\n"
         self.assertEqual(tc.without_loader(text), text)

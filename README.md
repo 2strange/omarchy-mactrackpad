@@ -22,13 +22,29 @@ Every switch applies live; sliders apply when you let go. Nothing runs in the ba
 The one part that is more than a setting is the **workspace swipe**. The plugin writes its own
 three-finger gesture: the workspace follows your fingers, empty workspaces stay reachable like
 Spaces on a Mac, the swipe works from workspace 1, and at the last workspace it stops, opens a
-new one or wraps around.
+new one or wraps around (wrap switches when the swipe ends).
 
 **Works with [MagicMouse](https://github.com/2strange/omarchy-magicmouse).** In its touchpad
-mode the Magic Mouse acts as a trackpad, and its two-finger swipe is this same gesture: end of
-row, empty workspaces and direction come from the Swipe tab here.
+mode the Magic Mouse acts as a trackpad that sends three fingers, so with Fingers set to 3 its
+two-finger swipe is this same gesture: end of row, empty workspaces and direction come from
+the Swipe tab here.
 
-![Mac Trackpad menu in the Omarchy bar](preview.png)
+![Mac Trackpad: the bar menu with its Pointer, Scroll, Swipe and Click tabs](preview.png)
+
+<p align="center"><sub>Screenshots from our MacBook Pro 11,3. Colors and fonts follow your Omarchy theme.</sub></p>
+
+## A look around
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/menu-swipe.png" alt="The Swipe tab: fingers, what happens at the last workspace, empty workspaces, direction"><br><strong>A swipe like Spaces</strong><br>Three or four fingers; at the last workspace stop, open a new one or wrap around; empty workspaces stay reachable.</td>
+    <td width="50%"><img src="docs/images/menu-click.png" alt="The Click tab: tap to click, tap and drag, two-finger right click, ignore while typing"><br><strong>Clicking the Mac way</strong><br>Tap to click, tap and drag, two fingers for a right click, and no stray touches while you type.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/menu-scroll.png" alt="The Scroll tab: natural scrolling and scroll speed"><br><strong>Scrolling</strong><br>Natural scrolling and the scroll speed, applied the moment you let go of the slider.</td>
+    <td width="50%"><img src="docs/images/menu-pointer.png" alt="The Pointer tab: tracking speed of the trackpad"><br><strong>Pointer</strong><br>Tracking speed for the trackpad alone; a mouse keeps its own.</td>
+  </tr>
+</table>
 
 ## Settings
 
@@ -77,7 +93,8 @@ it on, Hyprland's swipe does nothing at all on workspace 1.
 omarchy plugin add https://github.com/2strange/omarchy-mactrackpad.git --enable
 ```
 
-No password and no packages: the plugin only writes files in `~/.config/hypr/`.
+No password and no packages: it needs only `python3` and `hyprctl`, which Omarchy ships, and it
+only writes files in `~/.config/hypr/`.
 
 ## How it works
 

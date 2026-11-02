@@ -305,9 +305,9 @@ def without_loader(text):
         if begin not in text:
             continue
         head, _, rest = text.partition(begin)
-        if end not in rest:
+        body, found, tail = rest.partition(end)
+        if not found or begin in body:
             continue  # end marker deleted by hand: leave this block alone rather than cut too much
-        _, _, tail = rest.partition(end)
         text = head.rstrip("\n") + "\n" + tail.lstrip("\n")
     return text
 
