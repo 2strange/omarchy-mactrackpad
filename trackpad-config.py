@@ -33,6 +33,8 @@ end
 """
 # Built-in trackpads: Apple (bcm5974, applespi) and everything libinput names a touchpad.
 DEVICE_HINTS = ("bcm5974", "applespi", "touchpad", "trackpad")
+# The MagicMouse plugin's virtual touchpads (one per mouse) are touchpads too, but not ours to set.
+FOREIGN_PREFIXES = ("magic-mouse-",)
 STATE_PREFIX = "-- state: "
 
 # key -> (type, live hyprctl option or None, fallback)
@@ -75,6 +77,8 @@ def touchpad_device():
         return None
     for mouse in mice:
         name = str(mouse.get("name", ""))
+        if name.lower().startswith(FOREIGN_PREFIXES):
+            continue
         if any(hint in name.lower() for hint in DEVICE_HINTS):
             return name
     return None

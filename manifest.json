@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.2strange.mactrackpad",
   "name": "Mac Trackpad",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "2strange",
   "license": "MIT",
   "description": "Mac-like settings for the built-in trackpad, in the bar: natural scrolling, tracking and scroll speed, tap to click, two-finger right click, ignore while typing, applied live. No daemon: it writes ~/.config/hypr/trackpad.lua and one marked loader block in input.lua. Its own three-finger workspace swipe works from workspace 1, can keep empty workspaces 1-5, and at the end stops, opens a new one or wraps around. MagicMouse's two-finger swipe uses this same gesture (Fingers: 3).",
