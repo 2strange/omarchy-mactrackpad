@@ -111,7 +111,7 @@ only writes files in `~/.config/hypr/`.
   yourself and adds nothing.
 - The pointer speed is set per device. The plugin picks the first pointer whose
   name contains `bcm5974`, `applespi`, `touchpad` or `trackpad`; without one, the
-  speed slider has no effect.
+  speed slider has no effect. MagicMouse's own `magic-mouse-…` virtual touchpads are skipped.
 - Settings you never touched follow your current Hyprland values.
 
 From a terminal:
