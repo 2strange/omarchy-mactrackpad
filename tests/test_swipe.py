@@ -25,9 +25,10 @@ hl = {
 """
 
 
-def swipe(cur, open_here, direction, end="wrap", empty=True, invert=False, other=()):
+def swipe(cur, open_here, direction, end="wrap", empty=True, invert=False, other=(), special=()):
     ws = ", ".join([f'{{ id = {i}, monitor = {{ name = "A" }} }}' for i in open_here]
-                   + [f'{{ id = {i}, monitor = {{ name = "B" }} }}' for i in other])
+                   + [f'{{ id = {i}, monitor = {{ name = "B" }} }}' for i in other]
+                   + [f'{{ name = "special:{n}", monitor = {{ name = "A" }} }}' for n in special])
     s = {"swipe_fingers": 3, "swipe_end": end, "swipe_use_r": empty, "swipe_invert": invert}
     code = (STUB.replace("CUR", str(cur)).replace("WS", "{ " + ws + " }")
             + tc.gesture_lua(s) + f'\ngestures["{direction}"]()\nprint(focused)\n')
@@ -69,6 +70,11 @@ class SwipeTest(unittest.TestCase):
 
     def test_named_workspace_falls_back(self):
         self.assertEqual(swipe(-98, [1], "right"), "e+1")
+
+    def test_special_workspace_without_id_is_skipped(self):
+        # on Hyprland 0.57, special workspaces (e.g. the scratchpad) have no id at all
+        self.assertEqual(swipe(3, [1, 2, 3], "right", special=["scratchpad"]), "4")
+        self.assertEqual(swipe(1, [1], "left", special=["scratchpad"]), "5")
 
 
 if __name__ == "__main__":
