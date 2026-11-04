@@ -172,7 +172,7 @@ local function trackpad_swipe(forward)
   end
   local here, elsewhere, top = {{ [cur] = true }}, {{}}, cur
   for _, w in ipairs(hl.get_workspaces()) do
-    if w.id > 0 then
+    if w.id and w.id > 0 then  -- special workspaces (scratchpad) have no id
       if w.monitor and w.monitor.name == mon.name then
         here[w.id] = true
         top = math.max(top, w.id)
